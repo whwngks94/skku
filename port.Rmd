@@ -1,0 +1,78 @@
+---
+title: "Portfolio"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## 목차.
+
+1. [Simulate Vasicek r(t)]
+
+***
+
+## Simulate Vasicek r(t)
+
+```{r}
+## Simulate Vasicek r(t)
+set.seed(3)
+
+# parameter 설정
+r0 <- 0.03
+a <- 0.2
+b <- 0.03
+sigma <- 0.01
+n <- 10    # trials
+T <- 10    # (10년만기 국고채)
+h <- 3600    # subintervals
+dt <- T/h   
+
+
+# 시나리오 행렬 생성
+v_m <- as.data.frame(matrix(data=0, ncol = 21, nrow = h+1)) 
+v_m[1,1:10] <- r0
+colnames(v_m)=c("scenario1","scenario2","scenario3","scenario4","scenario5",
+                "scenario6","scenario7","scenario8","scenario9","scenario10", 
+                "price1", "price2", "price3", "price4", "price5",
+                "price6", "price7", "price8", "price9", "price10","t")
+
+for(j in 1:n){
+  for(i in 2:(h+1)){
+    dr <- a*(b-v_m[i-1,j])*dt + sigma*sqrt(dt)*rnorm(1,0,1)   # dr = a(b-r)dt + sigma*dz, where dz~N(0,dt) > using normal approximation
+    v_m[i,j] <- v_m[i-1,j] + dr   # r(t)
+  }
+} 
+
+v_m[,21] <- seq(0, 3600)
+v_m[,21] <- v_m[,21]/3600
+
+
+# plot r(t)
+t <- seq(0, T, dt)
+matplot(t, v_m[,1:10], type="l", lty=3, col = 1:10, main="Short-Rate Paths", ylab="r(t)") 
+
+
+
+# pricing bond
+Bondprice <- function(rt, a, b, sigma, k){
+    rbar <- b-(0.5*sigma^2/a^2)  # k= T-t
+    b.t <- (1/a)*(1-exp(-k*a))   # B(t,T) 
+    a.t <- exp(rbar*(b.t-k)-(b.t^2*sigma^2/(4*a)))   # A(t,T)
+    return(a.t*exp(-b.t*rt))
+  }
+
+for (i in 1:h+1){
+  for (j in 1:n){
+    v_m[i,j+10] <- Bondprice(v_m[i,j], a, b, sigma, v_m[i,21])  
+  }
+  
+}
+
+v_mp <- v_m[-1,]
+
+matplot(seq(1/3600,T,dt), v_mp[,11:20], type="l", lty=1, col = 1:10, main="Bond price", ylab="P(t,T)", xlab = "maturity")
+```
+
+***

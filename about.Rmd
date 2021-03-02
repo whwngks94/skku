@@ -1,0 +1,18 @@
+---
+title: "Joohan Cho"
+image: "Selfie.jpg"
+links:
+  - label: GitHub
+    url: "https://github.com/whwngks94"
+  - label: Email
+    url: "whwngks94@naver.com"
+    
+    
+output:
+  postcards::trestles
+---
+My name is Joohan Cho and I am an actuarial science major at Sunkyunkwan University. I have lived in Seoul. Basically, I always love challenging new things and easily adjust my self to new environments. Thank you for reading and have a good day!!
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```

@@ -1,0 +1,15 @@
+name: "."
+title: "Homepage"
+description: |
+  iyo-distill
+output_dir: "docs"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Portfolio"
+      href: port.html
+
+output: distill::distill_article
