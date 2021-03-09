@@ -3,6 +3,7 @@ title: "Portfolio"
 ---
 
 
+***
 ```{r}
 ## Simulate Vasicek r(t)
 set.seed(3)
@@ -63,3 +64,4 @@ v_mp <- v_m[-1,]
 matplot(seq(1/3600,T,dt), v_mp[,11:20], type="l", lty=1, col = 1:10, main="Bond price", ylab="P(t,T)", xlab = "maturity")
 
 ```
+***
