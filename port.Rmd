@@ -1,9 +1,8 @@
 ---
 title: "Portfolio"
-listing:
+listing: 
   posts:
-    - Finance Engineering
-    - Applied Statistics
+    - 2021-03-09-Finance Engineering
+    - 2021-03-09-Applied Statistics
 ---
-
 
