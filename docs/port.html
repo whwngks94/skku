@@ -2217,43 +2217,58 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://wilkelab.org/ggridges/'>ggridges</a></span><span class='op'>)</span>
 
 <span class='va'>house</span> <span class='op'>&lt;-</span> <span class='va'>ames_raw</span>
+<span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code> [1] &quot;1st Flr SF&quot;      &quot;2nd Flr SF&quot;      &quot;3Ssn Porch&quot;     
+ [4] &quot;Alley&quot;           &quot;Bedroom AbvGr&quot;   &quot;Bldg Type&quot;      
+ [7] &quot;Bsmt Cond&quot;       &quot;Bsmt Exposure&quot;   &quot;Bsmt Full Bath&quot; 
+[10] &quot;Bsmt Half Bath&quot;  &quot;Bsmt Qual&quot;       &quot;Bsmt Unf SF&quot;    
+[13] &quot;BsmtFin SF 1&quot;    &quot;BsmtFin SF 2&quot;    &quot;BsmtFin Type 1&quot; 
+[16] &quot;BsmtFin Type 2&quot;  &quot;Central Air&quot;     &quot;Condition 1&quot;    
+[19] &quot;Condition 2&quot;     &quot;Electrical&quot;      &quot;Enclosed Porch&quot; 
+[22] &quot;Exter Cond&quot;      &quot;Exter Qual&quot;      &quot;Exterior 1st&quot;   
+[25] &quot;Exterior 2nd&quot;    &quot;Fence&quot;           &quot;Fireplace Qu&quot;   
+[28] &quot;Fireplaces&quot;      &quot;Foundation&quot;      &quot;Full Bath&quot;      
+[31] &quot;Functional&quot;      &quot;Garage Area&quot;     &quot;Garage Cars&quot;    
+[34] &quot;Garage Cond&quot;     &quot;Garage Finish&quot;   &quot;Garage Qual&quot;    
+[37] &quot;Garage Type&quot;     &quot;Garage Yr Blt&quot;   &quot;Gr Liv Area&quot;    
+[40] &quot;Half Bath&quot;       &quot;Heating&quot;         &quot;Heating QC&quot;     
+[43] &quot;House Style&quot;     &quot;Kitchen AbvGr&quot;   &quot;Kitchen Qual&quot;   
+[46] &quot;Land Contour&quot;    &quot;Land Slope&quot;      &quot;Lot Area&quot;       
+[49] &quot;Lot Config&quot;      &quot;Lot Frontage&quot;    &quot;Lot Shape&quot;      
+[52] &quot;Low Qual Fin SF&quot; &quot;Mas Vnr Area&quot;    &quot;Mas Vnr Type&quot;   
+[55] &quot;Misc Feature&quot;    &quot;Misc Val&quot;        &quot;Mo Sold&quot;        
+[58] &quot;MS SubClass&quot;     &quot;MS Zoning&quot;       &quot;Neighborhood&quot;   
+[61] &quot;Open Porch SF&quot;   &quot;Order&quot;           &quot;Overall Cond&quot;   
+[64] &quot;Overall Qual&quot;    &quot;Paved Drive&quot;     &quot;PID&quot;            
+[67] &quot;Pool Area&quot;       &quot;Pool QC&quot;         &quot;Roof Matl&quot;      
+[70] &quot;Roof Style&quot;      &quot;Sale Condition&quot;  &quot;Sale Type&quot;      
+[73] &quot;SalePrice&quot;       &quot;Screen Porch&quot;    &quot;Street&quot;         
+[76] &quot;Total Bsmt SF&quot;   &quot;TotRms AbvGrd&quot;   &quot;Utilities&quot;      
+[79] &quot;Wood Deck SF&quot;    &quot;Year Built&quot;      &quot;Year Remod/Add&quot; 
+[82] &quot;Yr Sold&quot;        </code></pre>
+</div>
+<p>필요한 library와 ames_raw의 변수를 확인한다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Continuous variables</span>
 
-<span class='co'># Continuous variables</span>
 <span class='co'>## SalePrice graph</span>
-
 <span class='co'>### divde data into 30 equal bins or intervals.</span>
 
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-1.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-4-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/boxplot.html'>boxplot</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span>, main <span class='op'>=</span> <span class='st'>"SalePrice"</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-2.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### width : 5000, count the number of data</span>
-
-<span class='va'>house</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>count</span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/cut_interval.html'>cut_width</a></span><span class='op'>(</span><span class='va'>SalePrice</span>, width <span class='op'>=</span> <span class='fl'>5000</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>arrange</span><span class='op'>(</span><span class='fu'>desc</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>
-</code></pre>
+<p><img src="port_files/figure-html5/unnamed-chunk-4-2.png" width="624" /></p>
 </div>
-<pre><code># A tibble: 106 x 2
-   `cut_width(SalePrice, width = 5000)`     n
-   &lt;fct&gt;                                &lt;int&gt;
- 1 (1.28e+05,1.32e+05]                    137
- 2 (1.42e+05,1.48e+05]                    130
- 3 (1.32e+05,1.38e+05]                    125
- 4 (1.38e+05,1.42e+05]                    125
- 5 (1.22e+05,1.28e+05]                    118
- 6 (1.52e+05,1.58e+05]                    103
- 7 (1.48e+05,1.52e+05]                    101
- 8 (1.18e+05,1.22e+05]                     99
- 9 (1.58e+05,1.62e+05]                     92
-10 (1.72e+05,1.78e+05]                     92
-# … with 96 more rows</code></pre>
+<p>target 변수인 SalePrice를 이용한 histogram &amp; boxplot. histogram을 보면 왼쪽으로 그래프가 치우쳐져 있는 것을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### log transformed histogram</span>
 
@@ -2265,17 +2280,19 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-3.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
+</div>
+<p>데이터가 왼쪽을 치우쳐져 있기 때문에, 로그 변환 후 bins = 50 으로 설정하여 다시 histogram을 그린 결과 정규분포와 비슷한 모양을 가진다는 것을 알 수 있다. 하지만 tail이 상대적으로 짧은 느낌이고 중앙도 움푹 파인 부분이 있는 것을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### look at normality by using Q-Q plot</span>
-
 <span class='co'>### raw data</span>
 
 <span class='fu'><a href='https://rdrr.io/r/stats/qqnorm.html'>qqnorm</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span>, main <span class='op'>=</span> <span class='st'>"raw data Q-Q plot"</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/qqnorm.html'>qqline</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-4.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-6-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### log data</span>
 
@@ -2283,61 +2300,47 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='fu'><a href='https://rdrr.io/r/stats/qqnorm.html'>qqline</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-5.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-6-2.png" width="624" /></p>
+</div>
+<p>정규성을 확인하기 위해 raw data와 log data의 Q-Q plot을 그려보면, raw data는 꼬리로 갈수록 정규분포에서 많이 벗어나는 것을 알 수 있고, log data 또한 꼬리 부분은 벗어 나지만 상대적으로 raw data보다는 정규성을 가진다고 볼 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### plot</span>
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span>, col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/rgb.html'>rgb</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0</span>, <span class='fl'>0.5</span>, alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span>, ylab <span class='op'>=</span> <span class='st'>"SalePrice"</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-6.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<p>Target 변수인 SalePrice에 대한 plot을 그려보면 대부분의 값이 100,000 ~ 300,000 사이인 것을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>## Total square feet of basement area</span>
-
 <span class='co'>### graph `Total Bsmt SF`</span>
 
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>`Total Bsmt SF`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-7.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-8-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/graphics/boxplot.html'>boxplot</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>`Total Bsmt SF`</span>, main <span class='op'>=</span> <span class='st'>"Total Bsmt SF"</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-8.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-8-2.png" width="624" /></p>
+</div>
+<p>SalePrice에 영향을 많이 줄 것 같은 변수인 Total Bsmt SF에 대한 histogram과 boxplot을 그려보았다. 그 결과 SalePrice와 무언가 비슷한 형태를 가진다는 것을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Bar charts : One of the most commonly used data visualizations for categorical variables</span>
 <span class='co'># MS_Zoning</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span><span class='op'>)</span>
-</code></pre>
-</div>
-<img src="port_files/figure-html5/unnamed-chunk-3-9.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># total count</span>
-<span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='va'>house</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>count</span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, <span class='va'>n</span><span class='op'>)</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"Total count"</span><span class='op'>)</span>
-
-<span class='co'># percent of whole</span>
-<span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='va'>house</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>count</span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span><span class='op'>(</span>pct <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, <span class='va'>pct</span><span class='op'>)</span>, <span class='va'>pct</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"Percent of whole"</span><span class='op'>)</span>
-
-<span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, nrow <span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-</code></pre>
-</div>
-<img src="port_files/figure-html5/unnamed-chunk-3-10.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># n</span>
 <span class='va'>house</span> <span class='op'>%&gt;%</span>
   <span class='fu'>count</span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span><span class='op'>(</span>pct <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>arrange</span><span class='op'>(</span><span class='va'>pct</span><span class='op'>)</span>  <span class='co'># This imbalanced nature can cause problems in future analytic models.</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>ratio <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='va'>ratio</span><span class='op'>)</span>  <span class='co'># This imbalanced nature can cause problems in future analytic models.</span>
 </code></pre>
 </div>
 <pre><code># A tibble: 7 x 3
-  `MS Zoning`     n      pct
+  `MS Zoning`     n    ratio
   &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt;
 1 A (agr)         2 0.000683
 2 I (all)         2 0.000683
@@ -2349,26 +2352,48 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r">                <span class='co'># So it may make sense to combine these infrequent levels into an "other" category.</span>
 
-
-<span class='co'># make "other" category to MS Zoning</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="port_files/figure-html5/unnamed-chunk-9-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># total count</span>
+<span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='va'>house</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, <span class='va'>n</span><span class='op'>)</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"Total count"</span><span class='op'>)</span>
+<span class='va'>p1</span>
+</code></pre>
+</div>
+<p><img src="port_files/figure-html5/unnamed-chunk-9-2.png" width="624" /></p>
+</div>
+<p>이산형변수인 MS Zoning에 대해 table을 만들어보고 histogram을 그려보았다. RL이 가장 많고 I(all)과 A(agr)은 거의 없다고 봐도 무방할 것 같다. I(all)과 A(agr)와 같이 데이터가 많이 존재하지 않는 변수들은 분석에 큰 영향을 주지 않을 것으로 예상되어 이런 변수들을 묶어 ’other’이란 변수로 rename해주기로 한다.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># make "other" category to MS Zoning</span>
 <span class='va'>house</span> <span class='op'>%&gt;%</span>
   <span class='fu'>mutate</span><span class='op'>(</span>`MS Zoning` <span class='op'>=</span> <span class='fu'>fct_lump</span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, n <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  <span class='co'># 주요 인자 n개만 나타내고 나머지는 other 처리</span>
   <span class='fu'>count</span><span class='op'>(</span><span class='va'>`MS Zoning`</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span><span class='op'>(</span>pct <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, <span class='va'>pct</span><span class='op'>)</span>, <span class='va'>pct</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>ratio <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>`MS Zoning`</span>, <span class='va'>ratio</span><span class='op'>)</span>, <span class='va'>ratio</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-11.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-10-1.png" width="624" /></p>
+</div>
+<p>주요변수를 2개로 하고 나머지 변수들은 데이터가 많이 없기 때문에 ’other’로 만들어 주었다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>house</span> <span class='op'>%&gt;%</span>
   <span class='fu'>mutate</span><span class='op'>(</span>Neighborhood <span class='op'>=</span> <span class='fu'>fct_lump</span><span class='op'>(</span><span class='va'>Neighborhood</span>, n <span class='op'>=</span> <span class='fl'>26</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>count</span><span class='op'>(</span><span class='va'>Neighborhood</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span><span class='op'>(</span>pct <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>pct</span>, <span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>Neighborhood</span>, <span class='va'>pct</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_segment.html'>geom_segment</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>0</span>, xend <span class='op'>=</span> <span class='va'>pct</span>, y <span class='op'>=</span> <span class='va'>Neighborhood</span>, yend <span class='op'>=</span> <span class='va'>Neighborhood</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>ratio <span class='op'>=</span> <span class='va'>n</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>ratio</span>, <span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span><span class='op'>(</span><span class='va'>Neighborhood</span>, <span class='va'>ratio</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_segment.html'>geom_segment</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>0</span>, xend <span class='op'>=</span> <span class='va'>ratio</span>, y <span class='op'>=</span> <span class='va'>Neighborhood</span>, yend <span class='op'>=</span> <span class='va'>Neighborhood</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-12.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+</div>
+<p>또 다른 이산형 변수인 Neighborhood를 MS Zoning과 같은 방법으로 주요변수 26개를 이용해 그래프를 그렸다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># order variable (kitchenQual)</span>
 <span class='va'>house</span> <span class='op'>%&gt;%</span>
@@ -2376,7 +2401,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>`Kitchen Qual`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-13.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-12-1.png" width="624" /></p>
+</div>
+<p>다음은 순서가 있는 변수인 Kitchen Qual에 대해 histogram을 그리고 x축을 보기 쉽게 ‘Poor’, ‘Fair’, ‘Average/Typical’, ‘Good’, ‘Excellent’ 순서대로 나열하고 그래프를 그린다. ’poor’는 데이터가 없고 일반적인 수준인 ’Good’과 ’Average/Typical’이 가장 많은 것을 알 수 있다. 순서가 있는 경우에는 ’Poor’와 ’Excellent’가 데이터가 많이 없다고 하더라도 SalePrice에 미치는 영향이 많이 다를 수 있기 때문에 합쳐서 ’other’이라는 변수를 만드는 것은 분석에 방해가 될 것 같기도 하다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># categorial variable that has set intervals and may even be identified by integer values.</span>
 <span class='va'>p</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>`Mo Sold`</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -2384,13 +2412,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-14.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-13-1.png" width="624" /></p>
+</div>
+<p>그 다음으로는 집이 팔린 날짜에 대한 자료이다. 그래프를 보면 알겠지만 5월, 6월, 7월에 특히 빈도가 높은 것을 알 수 있다. 그 외에는 거의 비슷한 수준이라고 봐도 무방할 것 같다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Year Built</span>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>`Year Built`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-15.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-14-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>house</span> <span class='op'>%&gt;%</span>
   <span class='fu'>count</span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/cut_interval.html'>cut_width</a></span><span class='op'>(</span><span class='va'>`Year Built`</span>, width <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  <span class='co'># interval : 10-year</span>
@@ -2421,50 +2452,24 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1980</span>, <span class='fl'>1990</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-16.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># One of the most popular plots to assess association is the scatter plot.</span>
-<span class='co'># `Gr Liv Area` &amp; SalePrice</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Gr Liv Area`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>.3</span><span class='op'>)</span>
-</code></pre>
+<p><img src="port_files/figure-html5/unnamed-chunk-14-2.png" width="624" /></p>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-17.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Gr Liv Area`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>se <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"raw data variables"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>4500</span>, y<span class='op'>=</span><span class='fl'>500000</span>, label<span class='op'>=</span><span class='st'>"y=111.694x+13289.634"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>4500</span>, y<span class='op'>=</span><span class='fl'>450000</span>, label<span class='op'>=</span><span class='st'>"R²=0.4995"</span><span class='op'>)</span>
-<span class='va'>p1</span>
-</code></pre>
-</div>
-<img src="port_files/figure-html5/unnamed-chunk-3-18.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Gr Liv Area`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>se <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_log10</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"log data variables"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>1000</span>, y<span class='op'>=</span><span class='fl'>30000</span>, label<span class='op'>=</span><span class='st'>"y=0.90781x+2.35830"</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>3000</span>, y<span class='op'>=</span><span class='fl'>30000</span>, label<span class='op'>=</span><span class='st'>"R²=0.523"</span><span class='op'>)</span> 
-<span class='va'>p2</span>
-</code></pre>
-</div>
-<img src="port_files/figure-html5/unnamed-chunk-3-19.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</code></pre>
-</div>
-<img src="port_files/figure-html5/unnamed-chunk-3-20.png" width="624" />
+<p>집이 지어진 년도에 대한 자료인데, 그래프를 보면 알겠지만 시간이 지날수록 전반적으로 상승하다가, 1980 ~ 1990년 사이에는 데이터가 많이 없는 것을 알 수 있다. 사회적인 영향이 있는지 확인해볼 필요가 있을 것 같다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Total Bsmt SF` &amp; SalePrice</span>
-
-<span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Total Bsmt SF`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Total Bsmt SF`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>.3</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="port_files/figure-html5/unnamed-chunk-15-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Total Bsmt SF`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>se <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='st'>"raw data variables"</span><span class='op'>)</span>
 <span class='va'>p1</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-21.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-15-2.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Total Bsmt SF`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2473,12 +2478,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p2</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-22.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-15-3.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-23.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-15-4.png" width="624" /></p>
+</div>
+<p>SalePrice에 가장 영향을 많이 줄것이라고 생각했던 1) Total Bsmt SF 변수를 x축으로, SalePrice를 y축으로 2) log(Total Bsmt SF) 변수를 x축으로, SalePrice를 y축으로 해서 그래프 2개를 그려보았다.</p>
+<p>x가 0인 data와 x축 오른쪽끝에 보면 이상치와 같은 값이 2개가 존재하는 것을 확인할 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Misc Val` &amp; SalePrice &gt; no correlation?</span>
 <span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Misc Val`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2487,7 +2496,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p1</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-24.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-16-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Misc Val`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2496,18 +2505,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p2</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-25.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-16-2.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-26.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-16-3.png" width="624" /></p>
+</div>
+<p>Total Bsmt SF와 같이 Misc Val 변수도 2개의 그래프를 그려보았고, 그 결과 SalePrice에 영향을 많이 안준다는 것을 확인할 수 있었다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Year Built` &amp; SalePrice</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>house</span><span class='op'>$</span><span class='va'>`Year Built`</span>, <span class='va'>house</span><span class='op'>$</span><span class='va'>SalePrice</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-27.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-17-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Year Built`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2515,7 +2527,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p1</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-28.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-17-2.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Year Built`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2524,12 +2536,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p2</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-29.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-17-3.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-30.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-17-4.png" width="624" /></p>
+</div>
+<p>Year Built 변수는 일반적으로 생각하면 최신일수록 SalePrice가 높을 것이라고 예상할 수 있다. 그래프를 보아도 예상했던 것과 마찬가지인 것을 알 수 있다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Pool Area` &amp; SalePrice</span>
 
@@ -2539,7 +2554,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p1</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-31.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-18-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>`Pool Area`</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>TRUE</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, lty <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span> 
@@ -2548,20 +2563,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>p2</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-32.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-18-2.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>gridExtra</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html'>grid.arrange</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-33.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-18-3.png" width="624" /></p>
+</div>
+<p>본인은 처음 생각할 때, 수영장의 넓이가 넓을수록 집의 크기가 커질 것이고 그렇게 된다면 가격 또한 비쌀 것이라 생각했는데, 그래프를 그려보면 대부분의 집은 수영장이 없다는 것을 확인할 수 있었다. 따라서 이 변수 또한 SalePrice를 예측하는데 큰 도움이 되지 못할 것이라 생각한다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `MS Zoning` &amp; SalePrice</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Bedroom AbvGr` &amp; SalePrice</span>
 <span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>`Bedroom AbvGr`</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_jitter.html'>geom_jitter</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>.2</span>, width <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>
 <span class='va'>x1</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-34.png" width="624" />
+<p><img src="port_files/figure-html5/unnamed-chunk-19-1.png" width="624" /></p>
+</div>
+<p>Bedroom의 개수와 SalePrice에 대한 관계이다. 일반적으로 생각하기에 Bedroom이 많을 수록 가격이 비쌀 것이다 라고 생각할 수 있는데, 4개 까지는 그런 관계가 있지만 그 이후로는 오히려 가격이 내려간다는 것을 알 수 있다. 이 또한 직관적으로 생각한 것과는 많이 다른 부분이다.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Lot Shape` &amp; SalePrice</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>`Lot Shape`</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2569,7 +2590,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>x2</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-35.png" width="624" />
+<img src="port_files/figure-html5/unnamed-chunk-20-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># `Land Contour` &amp; SalePrice</span>
 <span class='va'>x3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>`Land Contour`</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='va'>SalePrice</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2577,15 +2598,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>x3</span>
 </code></pre>
 </div>
-<img src="port_files/figure-html5/unnamed-chunk-3-36.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>house</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>SalePrice</span>, y <span class='op'>=</span> <span class='va'>`Neighborhood`</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
-  <span class='fu'>ggridges</span><span class='fu'>::</span><span class='fu'><a href='https://wilkelab.org/ggridges/reference/geom_density_ridges.html'>geom_density_ridges</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org//reference/label_dollar.html'>dollar</a></span><span class='op'>)</span>
-</code></pre>
+<p><img src="port_files/figure-html5/unnamed-chunk-20-2.png" width="624" /></p>
 </div>
-<p><img src="port_files/figure-html5/unnamed-chunk-3-37.png" width="624" /></p>
-</div>
+<p>Lot Shape, Land Contour와 SalePrice에 대한 각각의 자료인데 두 변수에 따라 SalePrice가 크게 달라지지는 않는 것으로 보인다. 이런 변수들은 분석할 때 독립변수로 두는 것이 큰 의미가 있을까 라는 의문을 만들어준다.</p>
+<p>처음 데이터를 보았을 때 변수가 82개로 너무 많다고 생각을 했었다. <strong>기초통계분석</strong>을 하면서</p>
+<p><strong>1.</strong> 모든 변수가 내가 원하는 target 변수를 분석할 때 생각보다 많이 쓰이지 않을 것이라고 생각했다. (ex. Lot Shape, Land Contour …)</p>
+<p><strong>2.</strong> 그래프를 보면 처음 변수이름과 설명을 보고 생각했던 나의 직관과는 생각보다 많이 다르다는 것을 알 수 있다. (ex. Pool Area…) 또한 변수 안에서도 필요없거나 합쳐져야할 카테고리가 많은 것으로 보인다.</p>
+<p><strong>3.</strong> 우리가 볼 수 있는 데이터 외에 추가적으로 사회적인 현상과 이슈 같은 것들이 target변수에 영향을 줄 수도 있을 것 같다. (ex. Year Built…)</p>
 <hr />
 <div class="sourceCode" id="cb5"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
