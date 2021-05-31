@@ -9,17 +9,17 @@
     },
     {
       "path": "index.html",
-      "title": "Joohan",
+      "title": "Joohan Cho",
       "author": [],
-      "contents": "\n\n          \n          \n          Homepage\n          \n          \n          Home\n          About\n          Portfolio\n          ☰\n          \n          \n      \n        \n          \n            Joohan\n          \n          \n            \n              \n              SKKU 응용통계학!\n              \n            \n            \n              \n              SKKU 응용통계학!\n              \n            \n          \n\n          \n            \n              \n                  \n                    \n                      GitHub\n                    \n                  \n                \n                                \n                  \n                    \n                      Email\n                    \n                  \n                \n                              \n          \n\n          \n            \n              \n                                \n                  \n                    GitHub\n                  \n                \n                                \n                  \n                    Email\n                  \n                \n                              \n            \n          \n        \n      \n    \n\n    \n    \n    ",
-      "last_modified": "2021-05-31T11:20:11+00:00"
+      "contents": "\n\n          \n          \n          Homepage\n          \n          \n          Home\n          About\n          Portfolio\n          ☰\n          \n          \n      \n        \n          \n            Joohan Cho\n          \n          \n            \n              \n              skku applied statistics\n              \n            \n            \n              \n              skku applied statistics\n              \n            \n          \n\n          \n            \n              \n                  \n                    \n                      GitHub\n                    \n                  \n                \n                                \n                  \n                    \n                      Email\n                    \n                  \n                \n                              \n          \n\n          \n            \n              \n                                \n                  \n                    GitHub\n                  \n                \n                                \n                  \n                    Email\n                  \n                \n                              \n            \n          \n        \n      \n    \n\n    \n    \n    ",
+      "last_modified": "2021-05-31T12:35:40+00:00"
     },
     {
       "path": "port.html",
       "title": "Portfolio",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-05-31T11:23:08+00:00"
+      "last_modified": "2021-05-31T12:31:57+00:00"
     }
   ],
   "collections": ["posts/posts.json"]

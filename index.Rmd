@@ -1,5 +1,5 @@
 ---
-title: "Joohan"
+title: "Joohan Cho"
 image: "Selfie.jpg"
 links:
   - label: GitHub
@@ -10,4 +10,4 @@ site: distill::distill_website
 output:
   postcards::jolla
 ---
-### SKKU 응용통계학!
+### skku applied statistics
