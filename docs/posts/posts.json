@@ -47,7 +47,7 @@
     "categories": [],
     "contents": "\nPricing Barrier option\n\n\n# Assumptions\n\nscenario <- 100\ninterval <- 600\nt <- 1/(interval)\nr <- 0.03\nsigma <-0.4\nmu <- r-0.5*sigma^2\n\ns0 <- 100\nk <- 110\nbarrier <- 120\nset.seed(123)\n\n\n# Z\n\nz <- as.data.frame(matrix(rnorm(scenario*interval), nrow=scenario, ncol=interval))\n\nxx <- as.data.frame(matrix(data=0, nrow=scenario, ncol=interval+1))\n\nfor (i in 1:scenario){\n  for(j in 1:interval){\n    xx[i,j+1] <- xx[i,j] + (mu*t+(sigma*sqrt(t)*z[i,j]))\n  }\n}\n\n\nplot(x=seq(1, 600, 1),y=s0*exp(xx[3,2:601]), main = \"X(T)\", type = \"l\", ylab=\"X(t)\", xlab=\"interval\")\n\n\n\n## Payoff 식 만들어야함\n\nresult <- matrix(NA, scenario, 1)\n\nfor(i in 1:scenario){\n  result[i,1]<- exp(-r*1)*(s0*exp(xx[i,601])-k)  \n}\n\n\nmean(result[1:scenario,1])\n\n\n[1] -7.071878\n\n\n\n\n",
     "preview": "posts/2021-05-31-barrier-option-pricing/barrier-option-pricing_files/figure-html5/unnamed-chunk-1-1.png",
-    "last_modified": "2021-05-31T11:40:20+00:00",
+    "last_modified": "2021-05-31T11:52:59+00:00",
     "input_file": "barrier-option-pricing.utf8.md"
   }
 ]
