@@ -2170,57 +2170,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <p><img src="simulate-vasicek-rt_files/figure-html5/unnamed-chunk-1-2.png" width="624" /></p>
 </div>
-<h1 id="pricing-barrier-option">Pricing Barrier option</h1>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Assumptions</span>
-
-<span class='va'>scenario</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
-<span class='va'>interval</span> <span class='op'>&lt;-</span> <span class='fl'>600</span>
-<span class='va'>t</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>/</span><span class='op'>(</span><span class='va'>interval</span><span class='op'>)</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fl'>0.03</span>
-<span class='va'>sigma</span> <span class='op'>&lt;-</span><span class='fl'>0.4</span>
-<span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='va'>r</span><span class='op'>-</span><span class='fl'>0.5</span><span class='op'>*</span><span class='va'>sigma</span><span class='op'>^</span><span class='fl'>2</span>
-
-<span class='va'>s0</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
-<span class='va'>k</span> <span class='op'>&lt;-</span> <span class='fl'>110</span>
-<span class='va'>barrier</span> <span class='op'>&lt;-</span> <span class='fl'>120</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span>
-
-
-<span class='co'># Z</span>
-
-<span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>scenario</span><span class='op'>*</span><span class='va'>interval</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='va'>scenario</span>, ncol<span class='op'>=</span><span class='va'>interval</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>xx</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='fl'>0</span>, nrow<span class='op'>=</span><span class='va'>scenario</span>, ncol<span class='op'>=</span><span class='va'>interval</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='va'>scenario</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='kw'>for</span><span class='op'>(</span><span class='va'>j</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='va'>interval</span><span class='op'>)</span><span class='op'>{</span>
-    <span class='va'>xx</span><span class='op'>[</span><span class='va'>i</span>,<span class='va'>j</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>xx</span><span class='op'>[</span><span class='va'>i</span>,<span class='va'>j</span><span class='op'>]</span> <span class='op'>+</span> <span class='op'>(</span><span class='va'>mu</span><span class='op'>*</span><span class='va'>t</span><span class='op'>+</span><span class='op'>(</span><span class='va'>sigma</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>*</span><span class='va'>z</span><span class='op'>[</span><span class='va'>i</span>,<span class='va'>j</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='op'>}</span>
-<span class='op'>}</span>
-
-
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>600</span>, <span class='fl'>1</span><span class='op'>)</span>,y<span class='op'>=</span><span class='va'>s0</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>xx</span><span class='op'>[</span><span class='fl'>3</span>,<span class='fl'>2</span><span class='op'>:</span><span class='fl'>601</span><span class='op'>]</span><span class='op'>)</span>, main <span class='op'>=</span> <span class='st'>"X(T)"</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, ylab<span class='op'>=</span><span class='st'>"X(t)"</span>, xlab<span class='op'>=</span><span class='st'>"interval"</span><span class='op'>)</span>
-</code></pre>
-</div>
-<img src="simulate-vasicek-rt_files/figure-html5/unnamed-chunk-2-1.png" width="624" />
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>## Payoff 식 만들어야함</span>
-
-<span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='va'>scenario</span>, <span class='fl'>1</span><span class='op'>)</span>
-
-<span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='va'>scenario</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='va'>result</span><span class='op'>[</span><span class='va'>i</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>r</span><span class='op'>*</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>*</span><span class='op'>(</span><span class='va'>s0</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>xx</span><span class='op'>[</span><span class='va'>i</span>,<span class='fl'>601</span><span class='op'>]</span><span class='op'>)</span><span class='op'>-</span><span class='va'>k</span><span class='op'>)</span>  
-<span class='op'>}</span>
-
-
-<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>result</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>scenario</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code>[1] -7.071878</code></pre>
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>vasicek 모형을 이용한 이자율 simulation</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
