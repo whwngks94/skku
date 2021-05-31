@@ -1,0 +1,412 @@
+---
+title: "Loss models simulation part"
+description: |
+  A short description of the post.
+author:
+  - name: Joohan Cho
+    url: {}
+date: 05-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+## Pareto Distribution
+
+set.seed(111)
+n <- 10000
+x <- as.data.frame(matrix(data=0, nrow=n, ncol=3))
+
+for (i in 1:n){
+  x[i,1] <- 1000*((1-runif(1))^(-1/3)-1)
+}
+
+x[1,2] <- x[1,1]
+
+for (i in 1:n){
+  x[i+1,2]<- x[i,2]+x[i+1,1]
+}
+
+for (i in 1:n){
+  x[i,2] <- x[i,2]/i
+}
+
+
+x <- x[-10001,]
+plot(x=1:n, y=x[,2], type = "l", , main = "Simulation Pareto Distribution", xlab="# of simulations", ylab="mean")
+abline(h=500, col="red")
+
+
+x[,3] <- cut(x$V1, breaks = c(-1,100,250,500,750,1000,1500,2500,5000,10000,1000000000000000,10000000000000000))
+
+k <- table(x$V3)
+k
+k_t <- t(k)
+
+c <- as.data.frame(matrix(data=k_t, nrow=11, ncol=1))
+c[1,2] <- 10000*(1-(1000/(100+1000))^3)
+c[2,2] <- 10000*((1-(1000/(250+1000))^3)-(1-(1000/(100+1000))^3))
+c[3,2] <- 10000*((1-(1000/(500+1000))^3)-(1-(1000/(250+1000))^3))
+c[4,2] <- 10000*((1-(1000/(750+1000))^3)-(1-(1000/(500+1000))^3))
+c[5,2] <- 10000*((1-(1000/(1000+1000))^3)-(1-(1000/(750+1000))^3))
+c[6,2] <- 10000*((1-(1000/(1500+1000))^3)-(1-(1000/(1000+1000))^3))
+c[7,2] <- 10000*((1-(1000/(2500+1000))^3)-(1-(1000/(1500+1000))^3))
+c[8,2] <- 10000*((1-(1000/(5000+1000))^3)-(1-(1000/(2500+1000))^3))
+c[9,2] <- 10000*((1-(1000/(10000+1000))^3)-(1-(1000/(5000+1000))^3))
+c[10,2] <- 10000-sum(c$V2[1:9]) 
+
+c[,3] <- (c[,1]-c[,2])^2/c[,2]
+
+c[11,1] <- sum(c$V1[1:10])
+c[11,2] <- sum(c$V2[1:10])
+c[11,3] <- sum(c$V3[1:10])
+c
+
+colnames(x) =c("pseudorandom number", "mean", "interval")
+colnames(c) =c("observed", "expected", "chi-square")
+
+cp <- function(x){
+  k=1-(1000/(x+1000))^3
+  return(k)
+}
+
+plot(cp, xlim = c(0,1000), main = "cdf of pareto distribution", ylab = "F(x)")
+
+
+## Discrete Mixtures
+
+dm <- as.data.frame(matrix(data = 0, nrow = 10000, ncol = 5))
+colnames(dm) =c("u1","u2","interval","x", "mean")
+
+# 난수 생성 (u)
+for (i in 1:10000){
+  for (j in 1:2){
+    dm[i,j] <- runif(1)  
+  }
+} 
+
+# interval
+dm[,3] <- cut(dm$u1, breaks = c(0,0.3,0.8,1))
+m <- table(dm$interval)
+m
+
+# generating psuedorandom sapmples
+for (i in 1:10000){
+  if(dm[i,1]<=0.3){
+    dm[i,4] <- (-log(1-dm[i,2])/0.02) 
+  }else if(0.3<dm[i,1] & dm[i,1]<=0.8){
+    dm[i,4] <- (-log(1-dm[i,2])/0.04)
+  }else{
+    dm[i,4] <- (-log(1-dm[i,2])/0.05)
+  }
+}
+
+mean(dm$x)
+sd(dm$x)
+
+# generating mean
+dm[1,5] <- dm[1,4]
+for (i in 1:10000){
+  dm[i+1,5] <- dm[i,5]+dm[i+1,4]
+}
+dm <- dm[-10001,]
+
+for (i in 1:10000){
+  dm[i,5] <- dm[i,5]/i
+}
+
+
+
+# graph mean
+plot(dm$mean, type = "l", main = "Simulating Discrete Mixtures", ylab = "mean", xlab = "# of simulations")
+
+
+## Time or Age of Death from a Life Table
+lt <- as.data.frame(matrix(data = 0, nrow = 10000, ncol = 4))
+colnames(lt)=c("u","interval","x", "mean")
+
+
+
+
+# 난수 생성 (u)
+for (i in 1:10000){
+      lt[i,1] <- runif(1)  
+}
+
+# interval
+lt[,2] <- cut(lt$u, breaks = c(0,0.0810582,0.28575174,0.54316897,0.75811670,
+                               0.89218763,0.95881682,0.98629855,0.99597466,
+                               0.998494347,0.99974981,0.99994610))
+
+# generating psuedorandom sapmples
+for (i in 1:10000){
+  if(lt[i,1]<=0.0810582){
+    lt[i,3] <- 0
+  }else if(0.0810582<lt[i,1] & lt[i,1]<=0.28575174){
+    lt[i,3] <- 1
+  }else if(0.28575174<lt[i,1] & lt[i,1]<=0.54316897){
+    lt[i,3] <- 2
+  }else if(0.54316897<lt[i,1] & lt[i,1]<=0.75811670){
+    lt[i,3] <- 3
+  }else if(0.75811670<lt[i,1] & lt[i,1]<=0.89218763){
+    lt[i,3] <- 4
+  }else if(0.89218763<lt[i,1] & lt[i,1]<=0.95881682){
+    lt[i,3] <- 5
+  }else if(0.95881682<lt[i,1] & lt[i,1]<=0.98629855){
+    lt[i,3] <- 6
+  }else if(0.98629855<lt[i,1] & lt[i,1]<=0.99597466){
+    lt[i,3] <- 7
+  }else if(0.99597466<lt[i,1] & lt[i,1]<=0.998494347){
+    lt[i,3] <- 8
+  }else if(0.998494347<lt[i,1] & lt[i,1]<=0.99974981){
+    lt[i,3] <- 9
+  }else if(0.99974981<lt[i,1] & lt[i,1]<=0.99994610){
+    lt[i,3] <- 10
+  }else{
+    lt[i,3] <- 11
+  }
+}
+
+mean(lt$x)
+
+
+# generating mean
+lt[1,4] <- lt[1,3]
+for (i in 1:10000){
+  lt[i+1,4] <- lt[i,4]+lt[i+1,3]
+}
+lt <- lt[-10001,]
+
+for (i in 1:10000){
+  lt[i,4] <- lt[i,4]/i
+}
+
+
+# graph mean
+plot(lt$mean, type = "l", main = "Simulating Binomial distribution", ylab = "mean", xlab = "# of simulations")
+abline(h=2.5, col="red")
+
+
+# graph cdf of binomial
+y<-pbinom(0:11, size = 250, prob = 0.01)
+plot(0:11, y, type = "h", main = "cdf of binomial distribution", xlab = "x", ylab = "u")
+y
+
+
+## Simulating from the (a, b, 0) Class
+
+# Poisson
+# s생성
+set.seed(999)
+ab_sp <- as.data.frame(matrix(data = 0, nrow = 10000, ncol = 21))
+colnames(ab_sp)=c("0","1","2","3","4","5","6","7","8","9","10",
+               "11","12","13","14","15","16","17","18","19","20")
+
+for (i in 1:10000){
+  for (j in 1:21){
+    ab_sp[i,j] <- -log(1-runif(1))/2.5
+  }
+}
+
+# t 생성
+ab_tp <-as.data.frame(matrix(data = 0, nrow = 10000,ncol=21))
+colnames(ab_tp)=c("0","1","2","3","4","5","6","7","8","9","10",
+                 "11","12","13","14","15","16","17","18","19","mean")
+
+ab_tp[,1] <- ab_sp[,1]
+
+for (j in 1:10000){
+  for (i in 1:20){
+    ab_tp[j,i+1] <- ab_tp[j,i]+ab_sp[j,i+1]
+  }
+}
+
+for (j in 1:10000){
+  for (i in 1:20){
+    if(ab_tp[j,i] >=1){
+      ab_tp[j,i] <- NA
+    }else{
+      ab_tp[j,i] 
+    }
+  }
+}
+
+
+# Binomial
+# s생성
+ab_sb <- as.data.frame(matrix(data = 0, nrow = 10000, ncol = 21))
+colnames(ab_sb)=c("0","1","2","3","4","5","6","7","8","9","10",
+                 "11","12","13","14","15","16","17","18","19","20")
+
+for (i in 1:10000){
+  for (j in 1:21){
+    ab_sb[i,j] <- -log(1-runif(1))/(-250*log(1-0.01)+log(1-0.01)*j)
+  }
+}
+
+# t 생성
+ab_tb <-as.data.frame(matrix(data = 0, nrow = 10000,ncol=21))
+colnames(ab_tb)=c("0","1","2","3","4","5","6","7","8","9","10",
+                  "11","12","13","14","15","16","17","18","19","mean")
+
+ab_tb[,1] <- ab_sb[,1]
+
+for (j in 1:10000){
+  for (i in 1:20){
+    ab_tb[j,i+1] <- ab_tb[j,i]+ab_sb[j,i+1]
+  }
+}
+
+for (j in 1:10000){
+  for (i in 1:20){
+    if(ab_tb[j,i] >=1){
+      ab_tb[j,i] <- NA
+    }else{
+      ab_tb[j,i] 
+    }
+  }
+}
+
+
+
+# Negative Binomial
+# s생성
+ab_sn <- as.data.frame(matrix(data = 0, nrow = 10000, ncol = 21))
+colnames(ab_sn)=c("0","1","2","3","4","5","6","7","8","9","10",
+                  "11","12","13","14","15","16","17","18","19","20")
+
+for (i in 1:10000){
+  for (j in 1:21){
+    ab_sn[i,j] <- -log(1-runif(1))/(250*log(1+0.01)+log(1+0.01)*j)
+  }
+}
+
+# t 생성
+ab_tn <-as.data.frame(matrix(data = 0, nrow = 10000,ncol=21))
+colnames(ab_tn)=c("0","1","2","3","4","5","6","7","8","9","10",
+                  "11","12","13","14","15","16","17","18","19","mean")
+
+ab_tn[,1] <- ab_sn[,1]
+
+for (j in 1:10000){
+  for (i in 1:20){
+    ab_tn[j,i+1] <- ab_tn[j,i]+ab_sn[j,i+1]
+  }
+}
+
+for (j in 1:10000){
+  for (i in 1:20){
+    if(ab_tn[j,i] >=1){
+      ab_tn[j,i] <- NA
+    }else{
+      ab_tn[j,i] 
+    }
+  }
+}
+
+
+
+# use inversion method to get normal distribution
+
+nd <- as.data.frame(matrix(data=0, nrow = 10000, ncol = 2))
+colnames(nd)=c("u","z")
+
+for (i in 1:10000){
+  nd[i,1] <- runif(1)
+}
+
+for (i in 1:10000){
+  nd[i,2] <- qnorm(nd[i,1], 0, 1)
+}
+
+
+# Box-Muller
+rnorm.boxmuller = function(n, mean=0, sd=1){
+  u1 = runif(ceiling(n/2))
+  u2 = runif(ceiling(n/2))
+  z1 = sqrt(-2*log(u1))*cos(2*pi*u2)
+  z2 = sqrt(-2*log(u1))*sin(2*pi*u2)
+  c(z1, z2)[1:n]*sd+mean
+}
+
+
+
+# Polar method
+PolarMethod<-function(N)
+{
+  
+  x<-numeric(N)
+  y<-numeric(N)
+  z<-numeric(N)
+  
+  i<-1
+  
+  while(i<=N)
+  {u1<-runif(1)
+  u2<-runif(1)
+  v1<-(2*u1)-1
+  v2<-(2*u2)-1
+  s<-(v1^2)+(v2^2)
+  
+  if(s<=1)
+  {
+    x[i]<-((-2*log(s)/s)^(1/2))*v1
+    y[i]<-((-2*log(s)/s)^(1/2))*v2
+    z[i]<-(x[i]+y[i])/sqrt(2) #standarization
+    i<-i+1
+  }
+  else
+    i<-i-1
+  }
+  
+  return(z)
+}
+z<-PolarMethod(100000)
+
+# inversion method & Box-Muller & Polar method
+
+par(mfrow=c(1,2))
+
+hist(nd$z, freq = F, ylab = "density", main = "Inversion method", xlab = "z")
+curve(dnorm(x),from=-3,to=3,add=TRUE, col="red")
+
+hist(rnorm.boxmuller(100000), freq=F, ylab = "density", main = "Box-Muller", xlab = "z")
+curve(dnorm(x),from=-3,to=3,add=TRUE, col="red")
+
+hist(z, freq=F, ylab="density", xlab=" z", main = "Polar method")
+curve(dnorm(x),from=-3,to=3,add=TRUE, col="red")
+
+
+# Determine n
+pareto <- as.data.frame(matrix(data=0, nrow=10000, ncol=3))
+colnames(pareto) <- c("x", "count F(1000)", "percentile")
+
+for (i in 1:10000){
+  pareto[i,1] <- 1000*((1-runif(1))^(-1/3)-1)
+}
+
+for (i in 1:10000){
+  if(pareto[i,1]<=1000){
+    pareto[i,2] <- 1
+  }else{
+    pareto[i,2] <- 0
+  }
+}
+
+
+pareto[,3] <- sort(pareto[,1])
+
+
+quantile(pareto[,3], c(0.9))
+
+
+
+pareto[10001,1] <- mean(pareto[1:10000,1])
+pareto[10001,2] <- sum(pareto[1:10000,2])/10000
+```
