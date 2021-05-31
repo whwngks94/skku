@@ -1,0 +1,99 @@
+---
+title: "Gradient descent"
+description: |
+  A short description of the post.
+author:
+  - name: Joohan Cho
+    url: {}
+date: 05-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# data load
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(magrittr)
+library(skimr)
+library(knitr)
+library(janitor)
+file_path <- "/cloud/project"
+files <- list.files(file_path)
+files
+example_data <- read_csv(file.path(file_path, "example_data.csv"))
+head(example_data)
+```
+
+1. Calculate the coefficients by using the following code.
+
+# using glm package
+```{r}
+model <- glm(Claims ~ Gender + Territory, family = poisson(link = log), data = example_data)
+model$coefficients
+```
+
+2. Find the coefficient of Poisson regression above using an user define **R** function via gradient descent algorithm.
+
+# gradient descent
+```{r}
+library(reshape)
+example_data1 <- example_data
+example_data1[, 6] <- ifelse(example_data1$Gender=="M",1,0)
+example_data1[, 7] <- ifelse(example_data1$Territory=="West",1,0)
+example_data1 <- rename(example_data1, c(...6 = "dummy_gender", ...7 = "dummy_territory"))
+set.seed(1234)
+beta <- rnorm(3)
+sigma_f <- function(x){exp(x)} # mu = exp(x*beta)
+nll <- function(beta){
+y <- example_data$Claims
+pi_vec <- sigma_f(matrix(cbind(1, example_data1$dummy_gender,
+example_data1$dummy_territory),
+ncol = 3) %*% matrix(beta, nrow = 3))
+# exp(xbeta)
+-sum(-pi_vec + y*log(pi_vec) - log(factorial(y)))
+# - sum of poisson loglikelihood
+}
+nll(beta)
+```
+
+# poisson regression with MLE
+```{r}
+grad_nll <- function(beta){
+y <- example_data$Claims
+xbeta <- matrix(cbind(1, example_data1$dummy_gender,
+example_data1$dummy_territory),
+ncol = 3) %*% beta
+pi_vec <- sigma_f(xbeta)
+-colSums(as.vector(y-pi_vec)*
+matrix(cbind(1, example_data1$dummy_gender,
+example_data1$dummy_territory), ncol = 3))
+# sum (y-exp(xbeta)) * x, where exp(xbeta) is pi_vec
+}
+grad_nll(beta)
+```
+
+# optimization
+```{r}
+set.seed(1234)
+beta <- rnorm(3)
+iter_n <- 1
+improve <- 1
+conv_threshold <- 1e-10
+max_n <- 100000
+result <- matrix(0, nrow = max_n, ncol = 3)
+while ((improve > conv_threshold) & (iter_n <= max_n)) {
+beta_new <- beta - 0.001 * grad_nll(beta)
+improve <- abs(nll(beta) - nll(beta_new))
+result[iter_n, ] <- beta_new
+beta <- beta_new
+iter_n <- iter_n +1
+}
+result[iter_n-1,]
+```

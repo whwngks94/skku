@@ -83,5 +83,22 @@
     "preview": "posts/2021-05-31-simulate-vasicek-rt/simulate-vasicek-rt_files/figure-html5/unnamed-chunk-1-1.png",
     "last_modified": "2021-05-31T11:51:38+00:00",
     "input_file": {}
+  },
+  {
+    "path": "posts/2021-05-31-gradient-descent/",
+    "title": "Gradient descent",
+    "description": "A short description of the post.",
+    "author": [
+      {
+        "name": "Joohan Cho",
+        "url": {}
+      }
+    ],
+    "date": "2021-05-31",
+    "categories": [],
+    "contents": "\ndata load\n\n\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(magrittr)\nlibrary(skimr)\nlibrary(knitr)\nlibrary(janitor)\nfile_path <- \"/cloud/project\"\nfiles <- list.files(file_path)\nfiles\n\n\n [1] \"_posts\"           \"_site.yml\"        \"about.Rmd\"       \n [4] \"docs\"             \"example_data.csv\" \"index.Rmd\"       \n [7] \"port.Rmd\"         \"project.Rproj\"    \"README.md\"       \n[10] \"Selfie.jpg\"       \"test.csv\"         \"tobi.jpg\"        \n[13] \"train.csv\"       \n\nexample_data <- read_csv(file.path(file_path, \"example_data.csv\"))\nhead(example_data)\n\n\n# A tibble: 6 x 5\n  Policy Policy.Years Gender Territory Claims\n   <dbl>        <dbl> <chr>  <chr>      <dbl>\n1      1            5 M      East           0\n2      2            5 F      East           0\n3      3            4 M      East           1\n4      4            3 F      West           1\n5      5            4 F      East           0\n6      6            3 F      West           1\n\nCalculate the coefficients by using the following code.\nusing glm package\n\n\nmodel <- glm(Claims ~ Gender + Territory, family = poisson(link = log), data = example_data)\nmodel$coefficients\n\n\n  (Intercept)       GenderM TerritoryWest \n   -0.9808293     0.5108256     0.5108256 \n\nFind the coefficient of Poisson regression above using an user define R function via gradient descent algorithm.\ngradient descent\n\n\nlibrary(reshape)\nexample_data1 <- example_data\nexample_data1[, 6] <- ifelse(example_data1$Gender==\"M\",1,0)\nexample_data1[, 7] <- ifelse(example_data1$Territory==\"West\",1,0)\nexample_data1 <- rename(example_data1, c(...6 = \"dummy_gender\", ...7 = \"dummy_territory\"))\nset.seed(1234)\nbeta <- rnorm(3)\nsigma_f <- function(x){exp(x)} # mu = exp(x*beta)\nnll <- function(beta){\ny <- example_data$Claims\npi_vec <- sigma_f(matrix(cbind(1, example_data1$dummy_gender,\nexample_data1$dummy_territory),\nncol = 3) %*% matrix(beta, nrow = 3))\n# exp(xbeta)\n-sum(-pi_vec + y*log(pi_vec) - log(factorial(y)))\n# - sum of poisson loglikelihood\n}\nnll(beta)\n\n\n[1] 11.77771\n\npoisson regression with MLE\n\n\ngrad_nll <- function(beta){\ny <- example_data$Claims\nxbeta <- matrix(cbind(1, example_data1$dummy_gender,\nexample_data1$dummy_territory),\nncol = 3) %*% beta\npi_vec <- sigma_f(xbeta)\n-colSums(as.vector(y-pi_vec)*\nmatrix(cbind(1, example_data1$dummy_gender,\nexample_data1$dummy_territory), ncol = 3))\n# sum (y-exp(xbeta)) * x, where exp(xbeta) is pi_vec\n}\ngrad_nll(beta)\n\n\n[1]  0.2373889 -0.3136188  1.1560768\n\noptimization\n\n\nset.seed(1234)\nbeta <- rnorm(3)\niter_n <- 1\nimprove <- 1\nconv_threshold <- 1e-10\nmax_n <- 100000\nresult <- matrix(0, nrow = max_n, ncol = 3)\nwhile ((improve > conv_threshold) & (iter_n <= max_n)) {\nbeta_new <- beta - 0.001 * grad_nll(beta)\nimprove <- abs(nll(beta) - nll(beta_new))\nresult[iter_n, ] <- beta_new\nbeta <- beta_new\niter_n <- iter_n +1\n}\nresult[iter_n-1,]\n\n\n[1] -0.9810556  0.5109835  0.5109849\n\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-05-31T12:55:48+00:00",
+    "input_file": "gradient-descent.utf8.md"
   }
 ]
