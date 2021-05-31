@@ -1,0 +1,64 @@
+---
+title: "Barrier option pricing"
+description: |
+  A short description of the post.
+author:
+  - name: Joohan Cho
+    url: {}
+date: 05-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Pricing Barrier option
+  
+```{r}
+# Assumptions
+
+scenario <- 100
+interval <- 600
+t <- 1/(interval)
+r <- 0.03
+sigma <-0.4
+mu <- r-0.5*sigma^2
+
+s0 <- 100
+k <- 110
+barrier <- 120
+set.seed(123)
+
+
+# Z
+
+z <- as.data.frame(matrix(rnorm(scenario*interval), nrow=scenario, ncol=interval))
+
+xx <- as.data.frame(matrix(data=0, nrow=scenario, ncol=interval+1))
+
+for (i in 1:scenario){
+  for(j in 1:interval){
+    xx[i,j+1] <- xx[i,j] + (mu*t+(sigma*sqrt(t)*z[i,j]))
+  }
+}
+
+
+plot(x=seq(1, 600, 1),y=s0*exp(xx[3,2:601]), main = "X(T)", type = "l", ylab="X(t)", xlab="interval")
+
+
+## Payoff 식 만들어야함
+
+result <- matrix(NA, scenario, 1)
+
+for(i in 1:scenario){
+  result[i,1]<- exp(-r*1)*(s0*exp(xx[i,601])-k)  
+}
+
+
+mean(result[1:scenario,1])
+```
+

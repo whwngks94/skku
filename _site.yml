@@ -11,5 +11,9 @@ navbar:
       href: about.html
     - text: "Portfolio"
       href: port.html
-
+collections:
+  posts:
+    categories: true
+    categories_metadata: true
+    authors_metadata: true
 output: distill::distill_article
