@@ -1,0 +1,237 @@
+---
+title: "Ridge & Lasso regression"
+description: |
+  A short description of the post.
+author:
+  - name: Joohan Cho
+    url: {}
+date: 05-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+< R code>
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(magrittr)
+library(skimr)
+library(knitr)
+library(janitor)
+theme_set(theme_bw())
+```
+
+## Data load
+```{r }
+file_path <- "/cloud/project"
+files <- list.files(file_path)
+files
+test <- read_csv(file.path(file_path, "test.csv"))%>% 
+  janitor::clean_names()
+train <- read_csv(file.path(file_path, "train.csv"))%>% 
+  janitor::clean_names() 
+```
+
+# Preprecessing with `recipe` (전처리 레시피 만들기)
+```{r}
+install.packages("janitor")
+library(janitor)
+all_data <- bind_rows(train, test) %>% 
+  janitor::clean_names()
+```
+
+## Make recipe
+```{r}
+housing_recipe <- all_data %>% 
+  recipe(sale_price ~ .) %>%
+  step_rm(id) %>% 
+  step_log(sale_price) %>% 
+  step_modeimpute(all_nominal()) %>% 
+  step_dummy(all_nominal()) %>% 
+  step_meanimpute(all_predictors()) %>%
+  step_normalize(all_predictors()) %>%
+  prep(training = all_data)
+```
+
+## `juice` the all_data2 and split
+```{r}
+all_data2 <- juice(housing_recipe)
+```
+
+```{r}
+train_index <- seq_len(nrow(train))
+train2 <- all_data2[train_index,]
+test2 <- all_data2[-train_index,]
+```
+
+# Split the train into validation and train
+```{r}
+set.seed(2021)
+validation_split <- vfold_cv(train2, v = 10, strata = sale_price)
+```
+
+## Ridge
+# Set the tuning spec
+```{r}
+tune_spec <- linear_reg(penalty = tune(), # lambda
+                        mixture = 0) %>% # mixture= alpha, alpha=0:ridge, alpha=1:lasso
+    set_engine("glmnet")
+
+param_grid <- grid_regular(penalty(), levels = 100) 
+```
+
+# Set workflow()
+```{r}
+workflow <- workflow() %>%
+    add_model(tune_spec) %>%
+    add_formula(sale_price ~ .)
+```
+
+# Tuning lambda and alpha
+```{r}
+library(glmnet)
+tune_result <- workflow %>%
+    tune_grid(validation_split,
+              grid = param_grid,
+              metrics = metric_set(rmse))
+
+tune_result %>%
+  collect_metrics()
+tune_result
+```
+
+# Visualization of the tunning result
+```{r}
+tune_best <- tune_result %>%
+    select_best(metric = "rmse")
+
+tune_best$penalty
+
+tune_result %>%
+    collect_metrics() %>%
+    ggplot(aes(penalty, mean, color = .metric)) + 
+    geom_line(size = 1.5) + 
+    scale_x_log10() + 
+    theme(legend.position = "none") + 
+    labs(title = "RMSE")
+```
+
+```{r}
+tune_result %>%
+  show_best()
+```
+
+```{r}
+elastic_model <- 
+    linear_reg(penalty = tune_best$penalty,
+               mixture = 0) %>%
+    set_engine("glmnet")
+
+elastic_fit <- 
+    elastic_model %>%
+    fit(sale_price ~ ., data = train2)
+
+options(max.print = 10)
+
+elastic_fit %>%
+    tidy() %>%
+    filter(estimate > 0.001)
+```
+# coefficient vs lambda of ridge regression
+```{r}
+y <- data.matrix(train2[ , c("sale_price")])
+x <- train2[, c("lot_frontage", "lot_area", "overall_qual", "overall_cond", "year_built", "year_remod_add", "mas_vnr_area", "bsmt_fin_sf1", "bsmt_fin_sf2")] 
+lambdas <- seq(0, 2, by = 0.1)
+fit_ridge <- glmnet(x, y, alpha = 0, lambda = lambdas)
+plot(fit_ridge, xlab = "Lambda", ylab = "value")
+```
+
+
+## Lasso
+# Set the tuning spec
+```{r}
+tune_spec1 <- linear_reg(penalty = tune(), # lambda
+                        mixture = 1) %>% # = alpha, alpha=0:ridge, alpha=1:lasso
+    set_engine("glmnet")
+param_grid1 <- grid_regular(penalty(), levels = 100) 
+                        #  mixture(), 
+                        #  levels = list(penalty = 100,
+                        #             mixture = 5))
+```
+
+# Set workflow()
+```{r}
+workflow1 <- workflow() %>%
+    add_model(tune_spec1) %>%
+    add_formula(sale_price ~ .)
+```
+
+# Tuning lambda and alpha
+```{r}
+tune_result1 <- workflow1 %>%
+    tune_grid(validation_split,
+              grid = param_grid1,
+              metrics = metric_set(rmse))
+
+tune_result1 %>%
+    collect_metrics()
+```
+
+# Visualization of the tunning result
+```{r}
+tune_best1 <- tune_result1 %>%
+    select_best(metric = "rmse")
+
+tune_best1$penalty
+```
+
+```{r}
+tune_result1 %>%
+    collect_metrics() %>%
+    ggplot(aes(penalty, mean, color = .metric)) + 
+    geom_line(size = 1.5) + 
+    scale_x_log10() + 
+    theme(legend.position = "none") + 
+    labs(title = "RMSE")
+```
+
+```{r}
+tune_result1 %>%
+    show_best()
+```
+
+```{r}
+elastic_model1 <- 
+    linear_reg(penalty = tune_best1$penalty,
+               mixture = 1) %>%
+    set_engine("glmnet")
+elastic_fit1 <- 
+    elastic_model1 %>%
+    fit(sale_price ~ ., data = train2)
+options(max.print = 10)
+elastic_fit1 %>%
+    tidy() %>%
+    filter(estimate > 0.001)
+```
+
+# coefficient vs lambda of lasso regression 
+```{r}
+y <- data.matrix(train2[ , c("sale_price")])
+x1 <- train2[, c("lot_area", "overall_qual", "overall_cond", "year_built", "year_remod_add", "total_bsmt_sf", "x1st_flr_sf", "gr_liv_area", "bsmt_full_bath")] 
+lambdas <- seq(0, 2, by = 0.1)
+fit_lasso <- glmnet(x1, y, alpha = 1, lambda = lambdas)
+plot(fit_lasso, xlab = "Lambda", ylab = "value", main = "Lasso")
+```
+
+# plot ridge & lasso regression 
+```{r}
+par(mfrow=c(1,2))
+plot(fit_ridge, xlab = "Lambda", ylab = "value", main = "Ridge")
+plot(fit_lasso, xlab = "Lambda", ylab = "value", main = "Lasso")
+```
