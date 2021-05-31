@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "path": "posts/2021-05-31-simulate-vasicek-rt/",
+    "title": "simulate vasicek r(t)",
+    "description": "A short description of the post.",
+    "author": [
+      {
+        "name": "whwngks94",
+        "url": {}
+      }
+    ],
+    "date": "2021-05-31",
+    "categories": [],
+    "contents": "\nDistill is a publication format for scientific and technical writing, native to the web.\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-05-31T11:24:47+00:00",
+    "input_file": "simulate-vasicek-rt.utf8.md"
+  }
+]
