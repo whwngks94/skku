@@ -16,6 +16,8 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+- randomforest와 xgboost의 경우 코드를 실행하는데 너무 많은 시간이 소요 되기 때문에 코드실행을 정지해두었습니다.
+
 # 필요한 라이브러리 설치 및 data load
 ```{r, echo=TRUE, eval=FALSE}
 library(magrittr)
@@ -46,8 +48,8 @@ train1$credit <- as.factor(train1$credit)
 credit_recipe <- train1 %>% 
   recipe(credit ~ .) %>%
   # age and employment period in yrs
-  step_mutate(yrs_birth = -ceiling(DAYS_BIRTH/30),
-              yrs_employed = -ceiling(DAYS_EMPLOYED/30),
+  step_mutate(months_birth = -ceiling(DAYS_BIRTH/30),
+              months_employed = -ceiling(DAYS_EMPLOYED/30),
               income_total1 = ceiling(income_total/10000),
               income_total2 = ceiling(income_total/100000),
               income_total3 = ceiling(income_total/600000)) %>% 
@@ -59,7 +61,9 @@ credit_recipe <- train1 %>%
 
 ```
 
+birth와 employed를 월과 일 단위로 나누면 logistic regression 에서는 똑같은 전처리가 되겠지만, randomforest 또는 xgboost에서는 각각을 가중평균하여 사용할 것이라 생각하여 나누었고, 실제로 randomforest의 mn log loss 값이 줄어드는 것을 확인할 수 있었습니다. 똑같은 메커니즘으로 income total을 여러 구간으로 나눠보았고, 나눠보았던 값들 중에서는 10,000, 100,000, 600,000이 가장 좋아서 위와 같이 전처리를 하였습니다. 
 
+Flag_mobil은 값이 모두 1이기 때문에 제거하였습니다.
 
 # `juice`를 통한 전처리 즙짜기
 
@@ -78,6 +82,7 @@ library(stacks)
 ctrl_res <- control_stack_grid()
 ```
 
+5개의 folds를 이용해 validation을 5개로 나눠주었습니다.
 
 # logistic regression
 
@@ -127,6 +132,8 @@ logit_tune_result <- logistic_workflow %>%
 head(logit_tune_result)
 ```
 
+logistic regression 에서 최적의 penalty와 mixture값을 찾기위해 tune을 해주었고, 찾은 최적의 값을 이용해 logistic tune result를 만들어 주었습니다.
+
 
 # randforest 튜닝 스펙 설정
 ```{r, echo=TRUE, eval=FALSE}
@@ -141,6 +148,7 @@ tune_spec <- rand_forest(mtry = 3,
 param_grid1 <- tibble(mtry = 3, min_n = 5)
 ```
 
+logistic과 같은 메커니즘으로 randomforest에서 mtry와 min_n 값을 찾아주었고 값이 3, 5로 산출되어 각각을 입력해 주었습니다. 
 
 # 워크 플로우 설정 및 모델 튜닝
 ```{r, echo=TRUE, eval=FALSE}
@@ -158,6 +166,8 @@ tune_result_rf <- workflow %>%
 tune_result_rf %>% 
   collect_metrics()
 ```
+
+mtry = 3, min_n = 5를 이용해 randomforest tune result를 만들어 주었습니다. 
 
 # xgboost
 ```{r, echo=TRUE, eval=FALSE}
@@ -208,6 +218,7 @@ tune_result <- xgboost_workflow %>%
             control = ctrl_res)
 ```
 
+logistic, randomforest와 똑같은 방법으로 최적의 parameter값을 찾아주었고 그 값을 이용해 xgboost tune result를 만들어주었습니다. 
 
 # stacking
 ```{r, echo=TRUE, eval=FALSE}
@@ -233,6 +244,7 @@ result <- predict(dacon_stacking, test2, type = "prob")
 result
 ```
 
+logistic tune result & randomforest tune result & xgboost tune result를 추가해 stacking을 이용해여 dacon stacking을 만들어 주었고 이것을 이용해 test2를 확률로 예측하여 result라는 결과 값을 산출하였습니다. 
 
 # predict
 ```{r, echo=TRUE, eval=FALSE}

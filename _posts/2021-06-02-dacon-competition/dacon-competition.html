@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"NULL"}
+  {"type":"character","attributes":{},"value":["dacon-competition_files/anchor-4.2.2/anchor.min.js","dacon-competition_files/bowser-1.9.3/bowser.min.js","dacon-competition_files/distill-2.2.21/template.v2.js","dacon-competition_files/header-attrs-2.7/header-attrs.js","dacon-competition_files/jquery-1.11.3/jquery.min.js","dacon-competition_files/popper-2.6.0/popper.min.js","dacon-competition_files/tippy-6.2.7/tippy-bundle.umd.min.js","dacon-competition_files/tippy-6.2.7/tippy-light-border.css","dacon-competition_files/tippy-6.2.7/tippy.css","dacon-competition_files/tippy-6.2.7/tippy.umd.min.js","dacon-competition_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1478,6 +1478,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
+<ul>
+<li>randomforest와 xgboost의 경우 코드를 실행하는데 너무 많은 시간이 소요 되기 때문에 코드실행을 정지해두었습니다.</li>
+</ul>
 <h1 id="필요한-라이브러리-설치-및-data-load">필요한 라이브러리 설치 및 data load</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1507,8 +1510,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span class='va'>credit_recipe</span> <span class='op'>&lt;-</span> <span class='va'>train1</span> <span class='op'>%&gt;%</span> 
   <span class='fu'>recipe</span><span class='op'>(</span><span class='va'>credit</span> <span class='op'>~</span> <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='co'># age and employment period in yrs</span>
-  <span class='fu'>step_mutate</span><span class='op'>(</span>yrs_birth <span class='op'>=</span> <span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>DAYS_BIRTH</span><span class='op'>/</span><span class='fl'>30</span><span class='op'>)</span>,
-              yrs_employed <span class='op'>=</span> <span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>DAYS_EMPLOYED</span><span class='op'>/</span><span class='fl'>30</span><span class='op'>)</span>,
+  <span class='fu'>step_mutate</span><span class='op'>(</span>months_birth <span class='op'>=</span> <span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>DAYS_BIRTH</span><span class='op'>/</span><span class='fl'>30</span><span class='op'>)</span>,
+              months_employed <span class='op'>=</span> <span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>DAYS_EMPLOYED</span><span class='op'>/</span><span class='fl'>30</span><span class='op'>)</span>,
               income_total1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>income_total</span><span class='op'>/</span><span class='fl'>10000</span><span class='op'>)</span>,
               income_total2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>income_total</span><span class='op'>/</span><span class='fl'>100000</span><span class='op'>)</span>,
               income_total3 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>income_total</span><span class='op'>/</span><span class='fl'>600000</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
@@ -1520,6 +1523,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>birth와 employed를 월과 일 단위로 나누면 logistic regression 에서는 똑같은 전처리가 되겠지만, randomforest 또는 xgboost에서는 각각을 가중평균하여 사용할 것이라 생각하여 나누었고, 실제로 randomforest의 mn log loss 값이 줄어드는 것을 확인할 수 있었습니다. 똑같은 메커니즘으로 income total을 여러 구간으로 나눠보았고, 나눠보았던 값들 중에서는 10,000, 100,000, 600,000이 가장 좋아서 위와 같이 전처리를 하였습니다.</p>
+<p>Flag_mobil은 값이 모두 1이기 때문에 제거하였습니다.</p>
 <h1 id="juice를-통한-전처리-즙짜기"><code>juice</code>를 통한 전처리 즙짜기</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1540,6 +1545,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>5개의 folds를 이용해 validation을 5개로 나눠주었습니다.</p>
 <h1 id="logistic-regression">logistic regression</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1589,6 +1595,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>logistic regression 에서 최적의 penalty와 mixture값을 찾기위해 tune을 해주었고, 찾은 최적의 값을 이용해 logistic tune result를 만들어 주었습니다.</p>
 <h1 id="randforest-튜닝-스펙-설정">randforest 튜닝 스펙 설정</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1604,6 +1611,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>logistic과 같은 메커니즘으로 randomforest에서 mtry와 min_n 값을 찾아주었고 값이 3, 5로 산출되어 각각을 입력해 주었습니다.</p>
 <h1 id="워크-플로우-설정-및-모델-튜닝">워크 플로우 설정 및 모델 튜닝</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1623,6 +1631,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>mtry = 3, min_n = 5를 이용해 randomforest tune result를 만들어 주었습니다.</p>
 <h1 id="xgboost">xgboost</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1674,6 +1683,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>logistic, randomforest와 똑같은 방법으로 최적의 parameter값을 찾아주었고 그 값을 이용해 xgboost tune result를 만들어주었습니다.</p>
 <h1 id="stacking">stacking</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1700,6 +1710,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </code></pre>
 </div>
 </div>
+<p>logistic tune result &amp; randomforest tune result &amp; xgboost tune result를 추가해 stacking을 이용해여 dacon stacking을 만들어 주었고 이것을 이용해 test2를 확률로 예측하여 result라는 결과 값을 산출하였습니다.</p>
 <h1 id="predict">predict</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
