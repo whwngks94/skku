@@ -1,0 +1,248 @@
+---
+title: "dacon competition"
+description: |
+  A short description of the post.
+author:
+  - name: Joohan Cho
+    url: {}
+date: 06-02-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# 필요한 라이브러리 설치 및 data load
+```{r, echo=TRUE, eval=FALSE}
+library(magrittr)
+library(tidymodels)
+library(tidyverse)
+library(skimr)
+library(knitr)
+
+
+
+## 데이터셋 불러오기
+train1 <- read.csv("C:/Users/82109/Desktop/applied statistics/card/train.csv")
+test1 <- read.csv("C:/Users/82109/Desktop/applied statistics/card/test.csv")
+
+
+```
+
+
+# target 변수의 factor 설정 및 data 전처리
+
+```{r, echo=TRUE, eval=FALSE}
+## change credit as factor
+train1$credit <- as.factor(train1$credit)
+
+
+
+## 전처리 recipe
+credit_recipe <- train1 %>% 
+  recipe(credit ~ .) %>%
+  # age and employment period in yrs
+  step_mutate(yrs_birth = -ceiling(DAYS_BIRTH/30),
+              yrs_employed = -ceiling(DAYS_EMPLOYED/30),
+              income_total1 = ceiling(income_total/10000),
+              income_total2 = ceiling(income_total/100000),
+              income_total3 = ceiling(income_total/600000)) %>% 
+  step_rm(index, FLAG_MOBIL) %>%
+  step_unknown(occyp_type) %>% 
+  step_integer(all_nominal(), -all_outcomes()) %>% 
+  step_center(all_predictors(), -all_outcomes()) %>% 
+  prep(training = train1)
+
+```
+
+
+
+# `juice`를 통한 전처리 즙짜기
+
+```{r, echo=TRUE, eval=FALSE}
+train2 <- juice(credit_recipe)
+test2 <- bake(credit_recipe, new_data = test1)
+```
+
+# 튜닝 준비하기
+```{r, echo=TRUE, eval=FALSE}
+set.seed(523)
+validation_split <- vfold_cv(v = 5, train2,
+                             strata = credit)
+
+library(stacks)
+ctrl_res <- control_stack_grid()
+```
+
+
+# logistic regression
+
+```{r, echo=TRUE, eval=FALSE}
+logitstic_spec <- multinom_reg(
+  penalty = tune(),
+  mixture = tune()
+) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+logitstic_spec %>% translate()
+
+
+param_grid <- grid_latin_hypercube(
+  penalty(),
+  mixture(),
+  size = 10
+)
+head(param_grid)
+
+
+logistic_workflow <- workflow() %>%
+  add_model(logitstic_spec) %>% 
+  add_formula(credit ~ .)
+
+logit_tune_result <- logistic_workflow %>% 
+  tune_grid(validation_split,
+            grid = param_grid,
+            metrics = metric_set(mn_log_loss),
+            control = ctrl_res)
+
+logit_tune_best <- logit_tune_result %>% select_best(metric = "mn_log_loss")
+logit_tune_best
+
+
+logit_param_grid <- tibble(penalty = logit_tune_best$penalty, mixture = logit_tune_best$mixture)
+logit_param_grid
+
+logit_tune_result <- logistic_workflow %>% 
+  tune_grid(validation_split,
+            grid = logit_tune_best,
+            metrics = metric_set(mn_log_loss),
+            control = ctrl_res)
+
+
+head(logit_tune_result)
+```
+
+
+# randforest 튜닝 스펙 설정
+```{r, echo=TRUE, eval=FALSE}
+cores <- parallel::detectCores() -1
+tune_spec <- rand_forest(mtry = 3,
+                         min_n = 5,
+                         trees = 1000) %>% 
+  set_engine("ranger",
+             num.threads = cores) %>% 
+  set_mode("classification")
+
+param_grid1 <- tibble(mtry = 3, min_n = 5)
+```
+
+
+# 워크 플로우 설정 및 모델 튜닝
+```{r, echo=TRUE, eval=FALSE}
+workflow <- workflow() %>%
+  add_model(tune_spec) %>% 
+  add_formula(credit ~ .)
+
+# Tuning trees
+tune_result_rf <- workflow %>% 
+  tune_grid(validation_split,
+            grid = param_grid1,
+            metrics = metric_set(mn_log_loss),
+            control = ctrl_res)
+
+tune_result_rf %>% 
+  collect_metrics()
+```
+
+# xgboost
+```{r, echo=TRUE, eval=FALSE}
+xgboost_spec <- boost_tree(
+  trees = 1000, 
+  tree_depth = 6, 
+  mtry = tune(),
+  min_n = tune(), 
+  loss_reduction = tune(),  
+  sample_size = tune(), 
+  learn_rate = 0.005,
+  stop_iter = 10,
+) %>% 
+  set_engine('xgboost',
+             num_leaves = 60,
+             #  categorical_feature = c(1, 2, 5, 6, 8, 10),
+             num_threads = 10) %>% 
+  set_mode('classification')
+
+xgboost_spec %>% translate()
+
+xgboost_param_grid <- grid_random(
+  finalize(mtry(), train2[-1]),min_n(), 
+  loss_reduction(),
+  sample_size = sample_prop(range = c(0.4, 1)),
+  size = 15
+) %>% filter(mtry > 3)
+xgboost_param_grid
+
+xgboost_workflow <- workflow() %>%
+  add_model(xgboost_spec) %>% 
+  add_formula(credit ~ .)
+
+tune_result <- xgboost_workflow %>% 
+  tune_grid(validation_split,
+            grid = xgboost_param_grid,
+            metrics = metric_set(mn_log_loss),
+            control = ctrl_res)
+
+xg_tune_best <- tune_result %>% select_best(metric = "mn_log_loss")
+
+xg_param_grid <- tibble(mtry = xg_tune_best$mtry, min_n = xg_tune_best$min_n, loss_reduction = xg_tune_best$loss_reduction, sample_size = xg_tune_best$sample_size)
+
+tune_result <- xgboost_workflow %>% 
+  tune_grid(validation_split,
+            grid = xg_param_grid,
+            metrics = metric_set(mn_log_loss),
+            control = ctrl_res)
+```
+
+
+# stacking
+```{r, echo=TRUE, eval=FALSE}
+dacon_stacking <- 
+  stacks() %>% 
+  add_candidates(logit_tune_result) %>% 
+  add_candidates(tune_result_rf) %>%
+  add_candidates(tune_result) %>%
+
+# print stacking
+dacon_stacking
+
+# as tibble
+as_tibble(dacon_stacking) %>% head()
+
+dacon_stacking %<>% 
+  blend_predictions() %>% 
+  fit_members()
+
+dacon_stacking
+
+result <- predict(dacon_stacking, test2, type = "prob")
+result
+```
+
+
+# predict
+```{r, echo=TRUE, eval=FALSE}
+submission <- read.csv("C:/Users/82109/Desktop/applied statistics/card/sample_submission.csv")
+sub_col <- names(submission)
+submission <- bind_cols(submission$index, result)
+names(submission) <- sub_col
+write.csv(submission, row.names = FALSE,
+          "dacon_credit(stacking models).csv")
+```
+
+
+
